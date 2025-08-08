@@ -1,0 +1,27 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Candidate {
+  id           String           @id @default(uuid())
+  firstName    String           @map("first_name")
+  lastName     String           @map("last_name")
+  email        String           @unique @map("email")
+  phone        String?          @map("phone")
+  observations String?          @map("observations")
+  status       CandidateStatus  @default(PENDING) @map("status")
+
+  @@map("candidatos")
+}
+
+enum CandidateStatus {
+  PENDING  
+  INTERVIEW
+  REJECTED 
+  HIRED
+}

@@ -1,8 +1,6 @@
-// src/modules/candidate/dto/create-candidate.dto.ts
-
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsEmail, IsOptional, IsEnum } from 'class-validator';
-import { CandidateStatus } from '@prisma/client';
+import { CandidateStatusDomain } from '../../domain/entities/candidate.entity';
 
 export class CreateCandidateDto {
   @ApiProperty({
@@ -43,11 +41,11 @@ export class CreateCandidateDto {
   observations?: string;
 
   @ApiPropertyOptional({
-    example: CandidateStatus.INTERVIEW,
-    enum: CandidateStatus,
+    example: CandidateStatusDomain.INTERVIEW,
+    enum: CandidateStatusDomain,
     description: 'Current status of the candidate',
   })
   @IsOptional()
-  @IsEnum(CandidateStatus)
-  status?: CandidateStatus;
+  @IsEnum(CandidateStatusDomain)
+  status?: CandidateStatusDomain;
 }

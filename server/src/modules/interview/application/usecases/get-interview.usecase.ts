@@ -9,4 +9,8 @@ export class GetInterviewUseCase {
   async execute(id: string): Promise<InterviewDomain | null> {
     return this.repo.findById(id);
   }
+
+  async getAll(): Promise<InterviewDomain[]> {
+    return this.repo.findAll();
+  }
 }

@@ -16,6 +16,8 @@ model Candidate {
   observations String?          @map("observations")
   status       CandidateStatus  @default(PENDING) @map("status")
 
+  interviews   Interview[]
+
   @@map("candidatos")
 }
 
@@ -24,4 +26,16 @@ enum CandidateStatus {
   INTERVIEW
   REJECTED 
   HIRED
+}
+
+model Interview {
+  id          String   @id @default(uuid())
+  candidateId String
+  position    String
+  scheduledAt DateTime
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+    @@index([candidateId, scheduledAt])
+
 }

@@ -22,5 +22,6 @@ import { DeleteCandidateUseCase } from './application/usecases/delete-candidate.
       useClass: PrismaCandidateRepository,
     },
   ],
+  exports: [PrismaCandidateRepository, CandidateRepository],
 })
 export class CandidateModule {}

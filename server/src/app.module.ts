@@ -5,9 +5,9 @@ import { HealthModule } from './health/health.module';
 import { HealthController } from './health/health.controller';
 import { TerminusModule } from '@nestjs/terminus';
 import { CandidateModule } from './modules/candidate/candidate.module';
-
+import { InterviewModule } from './modules/interview/interview.module';
 @Module({
-  imports: [HealthModule, TerminusModule, CandidateModule],
+  imports: [HealthModule, TerminusModule, CandidateModule, InterviewModule],
   controllers: [AppController, HealthController],
   providers: [AppService],
 })

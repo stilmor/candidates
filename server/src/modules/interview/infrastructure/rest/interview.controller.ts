@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -32,19 +33,24 @@ export class InterviewController {
     return new InterviewResponseDto(created);
   }
 
-  //   @Get('candidates/:candidateId/interviews')
-  //   @ApiOperation({ summary: 'List interviews for a candidate' })
-  //   @ApiOkResponse({
-  //     description: 'List of interviews',
-  //     type: InterviewResponseDto,
-  //     isArray: true,
-  //   })
-  //   async listByCandidate(
-  //     @Param('candidateId') candidateId: string,
-  //   ): Promise<InterviewResponseDto[]> {
-  //     const items = await this.getCandidateInterviews.execute(candidateId);
-  //     return items.map((i) => new InterviewResponseDto(i));
-  //   }
+  @Get()
+  @ApiOperation({ summary: 'Get all interviews' })
+  @ApiOkResponse({
+    description: 'Interviews retrieved successfully',
+    type: InterviewResponseDto,
+    isArray: true,
+  })
+  @ApiNotFoundResponse({ description: 'Interview not found' })
+  @ApiBadRequestResponse({ description: 'Invalid input data' })
+  @ApiOkResponse({
+    description: 'Interviews retrieved successfully',
+    type: InterviewResponseDto,
+    isArray: true,
+  })
+  async findAll(): Promise<InterviewResponseDto[]> {
+    const interviews = await this.getInterview.getAll();
+    return interviews.map((interview) => new InterviewResponseDto(interview));
+  }
 
   @Get('interviews/:id')
   @ApiOperation({ summary: 'Get interview by ID' })

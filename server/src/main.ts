@@ -8,7 +8,7 @@ async function bootstrap() {
 
   // CORS para desarrollo (Vite en 5173)
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://candidates-front.onrender.com/'], // añade aquí tu front en dev
+    origin: ['http://localhost:5173', 'https://candidates-front.onrender.com'], // añade aquí tu front en dev
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: false, // pon true solo si usas cookies/sesión en navegador

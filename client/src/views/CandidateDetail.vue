@@ -4,11 +4,28 @@ import { useRoute, useRouter } from 'vue-router'
 import { useCandidatesStore } from '@/stores/candidates.store'
 import { useInterviewsStore } from '@/stores/interviews.store'
 import InterviewForm from '@/components/InterviewForm.vue'
+import AppBreadcrumbs from '@/components/AppBreadcrumbs.vue'
 
 const route = useRoute()
 const router = useRouter()
 const candidates = useCandidatesStore()
 const interviews = useInterviewsStore()
+
+// --- Tabla de entrevistas (headers + items) ---
+const interviewHeaders = [
+  { title: 'Fecha y hora', key: 'when' },
+  { title: 'Posición', key: 'position' },
+] as const
+
+const interviewItems = computed(() => {
+  const id = candidates.current?.id ?? ''
+  const list = interviews.byCandidate.get(id) ?? []
+  return list.map(i => ({
+    id: i.id,
+    when: new Date(i.scheduledAt).toLocaleString(),
+    position: i.position,
+  }))
+})
 
 // --- Edición y validación ---
 const editMode = ref(false)
@@ -105,15 +122,14 @@ async function doDelete() {
 <template>
   <div class="page">
     <div class="container">
+      <AppBreadcrumbs />
       <v-progress-linear v-if="candidates.loading" indeterminate class="mb-4 contained" />
       <v-alert v-if="candidates.error" type="error" class="mb-4 contained text-center">{{ candidates.error }}</v-alert>
 
       <template v-if="hasCurrent">
-        <!-- Cabecera -->
         <h2 class="title mb-1">{{ candidates.current!.firstName }} {{ candidates.current!.lastName }}</h2>
         <div class="subtitle mb-6">{{ candidates.current!.email }} · {{ candidates.current!.status }}</div>
 
-        <!-- Datos del candidato / Edición con validación -->
         <h3 class="section mb-2">Datos del candidato</h3>
         <div class="contained mb-6">
           <div class="d-flex justify-center align-center mb-3" style="gap: 8px;">
@@ -184,7 +200,6 @@ async function doDelete() {
           </template>
         </div>
 
-        <!-- Asignar entrevista -->
         <h3 class="section mb-2">Asignar entrevista</h3>
         <div class="contained mb-6">
           <v-row align="center" justify="center">
@@ -194,24 +209,22 @@ async function doDelete() {
           </v-row>
         </div>
 
-        <!-- Listado entrevistas -->
         <h3 class="section mb-2">Entrevistas</h3>
         <v-progress-linear v-if="interviews.loading" indeterminate class="mb-3 contained" />
         <v-alert v-if="interviews.error" type="error" class="mb-3 contained text-center">{{ interviews.error }}</v-alert>
 
         <v-row justify="center">
           <v-col cols="12" md="10" lg="8">
-            <v-list v-if="interviews.byCandidate.get(candidates.current!.id)?.length">
-              <v-list-item
-                v-for="i in interviews.byCandidate.get(candidates.current!.id)"
-                :key="i.id"
-              >
-                <v-list-item-title>
-                  {{ new Date(i.scheduledAt).toLocaleString() }} — {{ i.position }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-            <div v-else class="text-medium-emphasis text-center">No hay entrevistas</div>
+            <v-data-table
+              :headers="interviewHeaders"
+              :items="interviewItems"
+              item-key="id"
+              class="contained table-left"
+              density="comfortable"
+              :items-per-page="5"
+              hover
+              no-data-text="No hay entrevistas"
+            />
           </v-col>
         </v-row>
       </template>
@@ -221,22 +234,31 @@ async function doDelete() {
 
 <style scoped>
 .page {
-  width: 100%;                 /* evitar el desplazamiento por el scrollbar de 100vw */
-  min-height: 100dvh;          /* alto de la ventana respetando barras/UA */
-  padding: 24px;               /* margen interno simétrico */
+  width: 100%;
+  min-height: 100dvh;
+  padding: 24px;
   box-sizing: border-box;
-  display: flex;               /* centrar el contenedor */
+  display: flex;
   justify-content: center;
 }
 .container {
   max-width: 1920px;
-  margin: 0 auto;          /* centrado horizontal */
+  margin: 0 auto;
   text-align: center;
-  width: 100%;             /* que use todo el ancho disponible del .page */
+  width: 100%;
 }
 .title { text-align: center; }
 .subtitle { text-align: center; color: rgba(0,0,0,.6); }
 .section { font-weight: 600; }
 .contained { max-width: 1920px; margin: 0 auto; }
 .centered-block { max-width: 1920px; margin: 0 auto; }
+
+/* Alinear headers y celdas a la izquierda en la tabla de entrevistas */
+.table-left :deep(th),
+.table-left :deep(td) {
+  text-align: left;
+}
+.table-left :deep(.v-data-table__th .v-data-table-header__content) {
+  justify-content: flex-start;
+}
 </style>

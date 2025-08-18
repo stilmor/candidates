@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useCandidatesStore } from '@/stores/candidates.store'
+import AppBreadcrumbs from '@/components/AppBreadcrumbs.vue'
+import { useRouter } from 'vue-router'
 
 const store = useCandidatesStore()
+const router = useRouter()
 const name = ref('')
 const email = ref('')
 
@@ -21,6 +24,13 @@ const observations = ref('')
 const required = (v: string) => !!v || 'Requerido'
 const emailRule = (v: string) =>
   (!!v && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) || 'Email inválido'
+
+const tableHeaders = [
+  { title: 'Nombre', key: 'fullName', align: 'start' },
+  { title: 'Email', key: 'email', align: 'start' },
+  { title: 'Estado', key: 'status', align: 'start' },
+  { title: 'Acciones', key: 'actions', align: 'center', sortable: false }
+] as const
 
 async function openCreate() {
   // Limpia y abre el diálogo
@@ -54,6 +64,24 @@ async function createCandidate() {
   }
 }
 
+const tableItems = computed(() =>
+  store.list.map(c => ({
+    id: c.id,
+    fullName: `${c.firstName} ${c.lastName}`,
+    email: c.email,
+    status: c.status
+  }))
+)
+
+async function goToDetail(id: string) {
+  try {
+    // Precarga el detalle en el store para evitar parpadeo
+    await store.fetchById(id)
+  } finally {
+    router.push(`/candidates/${id}`)
+  }
+}
+
 function search() {
   store.fetchAll({ name: name.value || undefined, email: email.value || undefined })
 }
@@ -63,6 +91,7 @@ onMounted(() => store.fetchAll())
 <template>
   <div class="page">
     <div class="container">
+      <AppBreadcrumbs />
       <h2 class="title mb-6">Candidatos</h2>
 
       <v-row class="mb-4" justify="center" align="end">
@@ -123,18 +152,19 @@ onMounted(() => store.fetchAll())
       <v-alert v-if="store.error" type="error" class="mb-4 contained text-center">{{ store.error }}</v-alert>
 
       <v-row justify="center">
-        <v-col cols="12" md="10" lg="8">
-          <v-list v-if="store.list.length">
-            <v-list-item
-              v-for="c in store.list"
-              :key="c.id"
-              :to="`/candidates/${c.id}`"
-              link
-            >
-              <v-list-item-title>{{ c.firstName }} {{ c.lastName }}</v-list-item-title>
-              <v-list-item-subtitle>{{ c.email }} · {{ c.status }}</v-list-item-subtitle>
-            </v-list-item>
-          </v-list>
+        <v-col cols="12" md="10" lg="10">
+          <v-data-table
+            v-if="store.list.length"
+            :headers="tableHeaders"
+            :items="tableItems"
+            item-key="id"
+            class="elevation-1 table-left"
+            density="comfortable"
+          >
+            <template #item.actions="{ item }">
+              <v-btn size="small" variant="tonal" @click="goToDetail(item.id)">Ver</v-btn>
+            </template>
+          </v-data-table>
           <div v-else class="text-medium-emphasis text-center">No hay resultados</div>
         </v-col>
       </v-row>
@@ -154,9 +184,23 @@ onMounted(() => store.fetchAll())
 }
 .title { text-align: center; }
 .search-btn { height: 56px; min-width: 220px; }
-.contained { max-width: 900px; margin: 0 auto; }
+.contained { max-width: 1100px; margin: 0 auto; }
 @media (max-width: 960px) {
   .search-btn { width: 100%; min-width: 0; }
   .contained { max-width: 100%; }
+}
+/* --- Alineación de la tabla --- */
+.table-left :deep(th),
+.table-left :deep(td) {
+  text-align: left !important;
+}
+/* Alinear el contenido del header a la izquierda (Vuetify usa flex) */
+.table-left :deep(th .v-data-table-header__content) {
+  justify-content: flex-start;
+}
+/* Centrar la última columna (Acciones) */
+.table-left :deep(th:last-child),
+.table-left :deep(td:last-child) {
+  text-align: center !important;
 }
 </style>

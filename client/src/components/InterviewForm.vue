@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useInterviewsStore } from '@/stores/interviews'
+import { useInterviewsStore } from '@/stores/interviews.store'
 
 const props = defineProps<{ candidateId: string }>()
 const position = ref(''); const whenLocal = ref('')

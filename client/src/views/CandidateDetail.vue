@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useCandidatesStore } from '@/stores/candidates'
-import { useInterviewsStore } from '@/stores/interviews'
+import { useCandidatesStore } from '@/stores/candidates.store'
+import { useInterviewsStore } from '@/stores/interviews.store'
 import InterviewForm from '@/components/InterviewForm.vue'
 
 const route = useRoute()

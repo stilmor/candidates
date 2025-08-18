@@ -8,6 +8,14 @@ import { prismaInterviewToDomain } from '../mappers/interview.mapper';
 export class PrismaInterviewRepository implements InterviewRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByCandidateId(candidateId: string): Promise<InterviewDomain[]> {
+    const interviews = await this.prisma.interview.findMany({
+      where: { candidateId },
+      orderBy: { scheduledAt: 'desc' },
+    });
+    return interviews.map(prismaInterviewToDomain);
+  }
+
   async findById(id: string): Promise<InterviewDomain | null> {
     const interview = await this.prisma.interview.findUnique({
       where: { id },

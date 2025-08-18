@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { CandidateDTO } from '@/api/candidates.api'
-import { getCandidates, getCandidateById } from '@/api/candidates.api'
+import { getCandidates, getCandidateById, updateCandidate } from '@/api/candidates.api'
 
 export const useCandidatesStore = defineStore('candidates', {
   state: () => ({
@@ -8,6 +8,7 @@ export const useCandidatesStore = defineStore('candidates', {
     current: null as CandidateDTO | null,
     loading: false,
     error: null as string | null,
+    lastUpdated: null as CandidateDTO | null,
   }),
   actions: {
     async fetchAll(params?: { name?: string; email?: string }) {
@@ -25,6 +26,28 @@ export const useCandidatesStore = defineStore('candidates', {
       } catch (e: any) {
         this.error = e?.message ?? 'Candidate not found'; this.current = null
       } finally { this.loading = false }
+    },
+    async update(id: string, data: Partial<CandidateDTO>) {
+      this.loading = true; this.error = null
+      try {
+        const updated = await updateCandidate(id, data)
+        this.lastUpdated = updated
+        // sincroniza `current` si coincide
+        if (this.current && this.current.id === id) {
+          this.current = { ...this.current, ...updated }
+        }
+        // actualiza la lista si el candidato está cargado
+        const idx = this.list.findIndex(c => c.id === id)
+        if (idx !== -1) {
+          this.list.splice(idx, 1, { ...this.list[idx], ...updated })
+        }
+        return updated
+      } catch (e: any) {
+        this.error = e?.message ?? 'Error updating candidate'
+        throw e
+      } finally {
+        this.loading = false
+      }
     },
   },
 })

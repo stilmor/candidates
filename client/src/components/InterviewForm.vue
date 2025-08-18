@@ -13,11 +13,15 @@ function submit() {
 </script>
 
 <template>
-  <v-row dense>
-    <v-col cols="6"><v-text-field v-model="position" label="Posición" required /></v-col>
-    <v-col cols="4"><v-text-field v-model="whenLocal" type="datetime-local" label="Fecha/hora" required /></v-col>
-    <v-col cols="2" class="d-flex align-end">
-      <v-btn color="primary" :loading="store.loading" @click="submit">Asignar</v-btn>
+  <v-row align="center">
+    <v-col cols="12" md="5" lg="6">
+      <v-text-field v-model="position" label="Posición" required density="comfortable" hide-details />
+    </v-col>
+    <v-col cols="12" md="5" lg="4">
+      <v-text-field v-model="whenLocal" type="datetime-local" label="Fecha/hora" required density="comfortable" hide-details />
+    </v-col>
+    <v-col cols="12" md="2" lg="2" class="d-flex">
+      <v-btn color="primary" :loading="store.loading" @click="submit" height="56" class="w-100">Asignar</v-btn>
     </v-col>
   </v-row>
   <v-alert v-if="store.error" type="error" class="mt-2">{{ store.error }}</v-alert>

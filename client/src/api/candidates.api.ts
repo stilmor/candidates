@@ -1,8 +1,5 @@
-// client/src/api/candidates.ts
 import { http } from './http'
 
-// Ajusta el DTO a lo que devuelve tu backend.
-// Si `phone`/`observations` pueden ser null, se tipan como string | null.
 export interface CandidateDTO {
   id: string
   firstName: string
@@ -10,7 +7,7 @@ export interface CandidateDTO {
   email: string
   phone?: string | null
   observations?: string | null
-  status?: string // si tienes un enum en el back, cámbialo por ese tipo
+  status: 'PENDING' | 'INTERVIEW' | 'REJECTED' | 'HIRED'
 }
 
 export type CandidateFilters = {
@@ -53,7 +50,7 @@ export async function updateCandidate(id: string, payload: UpdateCandidatePayloa
   return data
 }
 
-// DELETE /candidates/:id (si lo expones)
+// DELETE /candidates/:id
 export async function deleteCandidate(id: string): Promise<void> {
   await http.delete(`/candidates/${id}`)
 }

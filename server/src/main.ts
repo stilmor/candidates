@@ -8,10 +8,10 @@ async function bootstrap() {
 
   // CORS para desarrollo (Vite en 5173)
   app.enableCors({
-    origin: ['http://localhost:5173', 'https://candidates-front.onrender.com'], // añade aquí tu front en dev
+    origin: ['http://localhost:5173', 'https://candidates-front.onrender.com'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: false, // pon true solo si usas cookies/sesión en navegador
+    credentials: false,
     optionsSuccessStatus: 204,
   });
 
@@ -24,7 +24,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  const seed = app.get<SeedService>(SeedService); // 👈 ya no es any
+  const seed = app.get<SeedService>(SeedService); 
   await seed.run();
 
   await app.listen(3000);

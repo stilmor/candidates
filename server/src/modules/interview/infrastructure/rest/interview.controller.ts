@@ -62,4 +62,18 @@ export class InterviewController {
     const interview = await this.getInterview.execute(id);
     return interview ? new InterviewResponseDto(interview) : null;
   }
+
+  @Get('interviews/candidate/:candidateId')
+  @ApiOperation({ summary: 'Get interviews by candidate ID' })
+  @ApiOkResponse({
+    description: 'Interviews found',
+    type: InterviewResponseDto,
+    isArray: true,
+  })
+  async getByCandidate(
+    @Param('candidateId') candidateId: string,
+  ): Promise<InterviewResponseDto[]> {
+    const interviews = await this.getInterview.getByCandidate(candidateId);
+    return interviews.map((interview) => new InterviewResponseDto(interview));
+  }
 }

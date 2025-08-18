@@ -13,4 +13,8 @@ export class GetInterviewUseCase {
   async getAll(): Promise<InterviewDomain[]> {
     return this.repo.findAll();
   }
+
+  async getByCandidate(candidateId: string): Promise<InterviewDomain[]> {
+    return this.repo.findByCandidateId(candidateId);
+  }
 }

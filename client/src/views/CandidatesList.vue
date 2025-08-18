@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useCandidatesStore } from '@/stores/candidates'
+import { useCandidatesStore } from '@/stores/candidates.store'
 
 const store = useCandidatesStore()
 const name = ref('')

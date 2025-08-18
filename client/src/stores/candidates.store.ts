@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { CandidateDTO } from '@/api/candidates.api'
-import { getCandidates, getCandidateById, updateCandidate } from '@/api/candidates.api'
+import { getCandidates, getCandidateById, updateCandidate, deleteCandidate, createCandidate } from '@/api/candidates.api'
 
 export const useCandidatesStore = defineStore('candidates', {
   state: () => ({
@@ -27,6 +27,7 @@ export const useCandidatesStore = defineStore('candidates', {
         this.error = e?.message ?? 'Candidate not found'; this.current = null
       } finally { this.loading = false }
     },
+    
     async update(id: string, data: Partial<CandidateDTO>) {
       this.loading = true; this.error = null
       try {
@@ -44,6 +45,41 @@ export const useCandidatesStore = defineStore('candidates', {
         return updated
       } catch (e: any) {
         this.error = e?.message ?? 'Error updating candidate'
+        throw e
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async delete(id: string) {
+      this.loading = true; this.error = null
+      try {
+        await deleteCandidate(id)
+        // Elimina de la lista si está
+        const idx = this.list.findIndex(c => c.id === id)
+        if (idx !== -1) {
+          this.list.splice(idx, 1)
+        }
+        // Si se elimina el actual, limpia
+        if (this.current && this.current.id === id) {
+          this.current = null
+        }
+      } catch (e: any) {
+        this.error = e?.message ?? 'Error deleting candidate'
+        throw e
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async create(data: Omit<CandidateDTO, 'id'>) {
+      this.loading = true; this.error = null
+      try {
+        const created = await createCandidate(data)
+        this.list.push(created)
+        return created
+      } catch (e: any) {
+        this.error = e?.message ?? 'Error creating candidate'
         throw e
       } finally {
         this.loading = false

@@ -6,6 +6,54 @@ const store = useCandidatesStore()
 const name = ref('')
 const email = ref('')
 
+const createDialog = ref(false)
+const submitting = ref(false)
+const createForm = ref<any>(null)
+
+// Campos del formulario de creación
+const firstName = ref('')
+const lastName = ref('')
+const newEmail = ref('')
+const phone = ref('')
+const observations = ref('')
+
+// Reglas básicas de validación
+const required = (v: string) => !!v || 'Requerido'
+const emailRule = (v: string) =>
+  (!!v && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) || 'Email inválido'
+
+async function openCreate() {
+  // Limpia y abre el diálogo
+  firstName.value = ''
+  lastName.value = ''
+  newEmail.value = ''
+  phone.value = ''
+  observations.value = ''
+  createDialog.value = true
+}
+
+async function createCandidate() {
+  // valida el v-form antes de enviar
+  const res = await createForm.value?.validate?.()
+  if (res && res.valid === false) return
+
+  submitting.value = true
+  try {
+    await store.create({
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: newEmail.value,
+      phone: phone.value || undefined,
+      observations: observations.value || undefined,
+    } as any)
+    createDialog.value = false
+    // refresca listado tras crear
+    await store.fetchAll({ name: name.value || undefined, email: email.value || undefined })
+  } finally {
+    submitting.value = false
+  }
+}
+
 function search() {
   store.fetchAll({ name: name.value || undefined, email: email.value || undefined })
 }
@@ -23,6 +71,45 @@ onMounted(() => store.fetchAll())
         </v-col>
         <v-col cols="12" md="5">
           <v-text-field v-model="email" label="Buscar por email" />
+        </v-col>
+      </v-row>
+
+      <v-dialog v-model="createDialog" max-width="640">
+        <v-card>
+          <v-card-title class="text-h6">Crear candidato</v-card-title>
+          <v-card-text>
+            <v-form ref="createForm" @submit.prevent="createCandidate">
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-text-field v-model="firstName" :rules="[required]" label="Nombre *" density="comfortable" />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field v-model="lastName" :rules="[required]" label="Apellidos *" density="comfortable" />
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field v-model="newEmail" :rules="[required, emailRule]" label="Email *" type="email" density="comfortable" />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field v-model="phone" label="Teléfono" density="comfortable" />
+                </v-col>
+                <v-col cols="12">
+                  <v-textarea v-model="observations" label="Observaciones" rows="3" auto-grow density="comfortable" />
+                </v-col>
+              </v-row>
+              <v-card-actions class="justify-end">
+                <v-btn variant="text" type="button" @click="createDialog = false">Cancelar</v-btn>
+                <v-btn color="primary" :loading="submitting" type="submit">Crear</v-btn>
+              </v-card-actions>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+
+      <v-row class="mb-6" justify="center">
+        <v-col cols="12" md="10" lg="8" class="d-flex justify-center">
+          <v-btn color="primary" variant="elevated" @click="openCreate">
+            Crear candidato
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -64,7 +151,6 @@ onMounted(() => store.fetchAll())
 }
 .container {
   max-width: 1100px;
-  margin: 10px;
 }
 .title { text-align: center; }
 .search-btn { height: 56px; min-width: 220px; }

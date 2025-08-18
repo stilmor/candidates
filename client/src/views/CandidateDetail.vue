@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, watch, reactive, ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useCandidatesStore } from '@/stores/candidates.store'
 import { useInterviewsStore } from '@/stores/interviews.store'
 import InterviewForm from '@/components/InterviewForm.vue'
 
 const route = useRoute()
+const router = useRouter()
 const candidates = useCandidatesStore()
 const interviews = useInterviewsStore()
 
@@ -13,6 +14,8 @@ const interviews = useInterviewsStore()
 const editMode = ref(false)
 const formRef = ref<any>(null)
 const savedOk = ref(false)
+const confirmDelete = ref(false)
+const deleting = ref(false)
 
 type CandidateStatus = 'PENDING' | 'INTERVIEW' | 'REJECTED' | 'HIRED'
 
@@ -84,6 +87,19 @@ function cancel() {
   editMode.value = false
   fillFormFromCurrent()
 }
+
+async function doDelete() {
+  if (!candidates.current) return
+  deleting.value = true
+  try {
+    await candidates.delete(candidates.current.id)
+    // Redirigir a la lista de candidatos
+    router.push({ name: 'candidates' })
+  } finally {
+    deleting.value = false
+    confirmDelete.value = false
+  }
+}
 </script>
 
 <template>
@@ -104,7 +120,29 @@ function cancel() {
             <v-btn v-if="!editMode" color="primary" @click="editMode = true">Editar</v-btn>
             <v-btn v-else color="primary" :loading="candidates.loading" @click="save">Guardar</v-btn>
             <v-btn v-if="editMode" variant="text" @click="cancel">Cancelar</v-btn>
+            <v-btn
+              color="error"
+              variant="tonal"
+              @click="confirmDelete = true"
+            >
+              Eliminar
+            </v-btn>
           </div>
+          <v-dialog v-model="confirmDelete" max-width="480">
+            <v-card>
+              <v-card-title class="text-h6">Eliminar candidato</v-card-title>
+              <v-card-text>
+                ¿Seguro que quieres eliminar a
+                <strong>{{ candidates.current!.firstName }} {{ candidates.current!.lastName }}</strong>?
+                Esta acción no se puede deshacer.
+              </v-card-text>
+              <v-card-actions class="justify-end">
+                <v-btn variant="text" @click="confirmDelete = false">Cancelar</v-btn>
+                <v-btn color="error" :loading="deleting" @click="doDelete">Sí, eliminar</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
           <v-alert v-if="savedOk" type="success" class="mb-3">Cambios guardados</v-alert>
 
           <template v-if="!editMode">

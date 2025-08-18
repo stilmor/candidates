@@ -1,12 +1,44 @@
 {
   "name": "candidates-monorepo",
   "private": true,
-  "workspaces": ["server", "client"],
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
     "dev": "npm run dev -w server & npm run dev -w client",
     "dev:server": "npm run dev -w server",
     "dev:client": "npm run dev -w client",
     "build:server": "npm run build -w server",
     "build:client": "npm run build -w client"
+  },
+  "devDependencies": {
+    "@types/babel__core": "^7.20.5",
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__template": "^7.4.4",
+    "@types/babel__traverse": "^7.28.0",
+    "@types/body-parser": "^1.19.6",
+    "@types/connect": "^3.4.38",
+    "@types/cookiejar": "^2.1.5",
+    "@types/eslint-scope": "^8.3.2",
+    "@types/express": "^5.0.3",
+    "@types/express-serve-static-core": "^5.0.7",
+    "@types/http-errors": "^2.0.5",
+    "@types/istanbul-lib-coverage": "^2.0.6",
+    "@types/istanbul-lib-report": "^3.0.3",
+    "@types/istanbul-reports": "^3.0.4",
+    "@types/json-schema": "^7.0.15",
+    "@types/methods": "^1.1.4",
+    "@types/mime": "^3.0.4",
+    "@types/qs": "^6.14.0",
+    "@types/range-parser": "^1.2.7",
+    "@types/send": "^0.17.5",
+    "@types/serve-static": "^1.15.8",
+    "@types/stack-utils": "^2.0.3",
+    "@types/superagent": "^8.1.9",
+    "@types/supertest": "^6.0.3",
+    "@types/validator": "^13.15.2",
+    "@types/yargs": "^17.0.33",
+    "@types/yargs-parser": "^21.0.3"
   }
 }

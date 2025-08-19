@@ -11,7 +11,6 @@ import { CreateInterviewDto } from '../../application/dtos/create-interview-dto'
 import { InterviewResponseDto } from './dtos/interview-response.dto';
 import { CreateInterviewUseCase } from '../../application/usecases/create-interview.usecase';
 import { GetInterviewUseCase } from '../../application/usecases/get-interview.usecase';
-// import { GetCandidateInterviewsUseCase } from '../../application/usecases/get-candidate-interviews.usecase';
 
 @ApiTags('interviews')
 @Controller()
@@ -33,7 +32,7 @@ export class InterviewController {
     return new InterviewResponseDto(created);
   }
 
-  @Get()
+  @Get('/interviews')
   @ApiOperation({ summary: 'Get all interviews' })
   @ApiOkResponse({
     description: 'Interviews retrieved successfully',

@@ -5,6 +5,4 @@ export abstract class InterviewRepository {
   abstract findById(id: string): Promise<InterviewDomain | null>;
   abstract findAll(): Promise<InterviewDomain[]>;
   abstract findByCandidateId(candidateId: string): Promise<InterviewDomain[]>;
-  // abstract update(interview: InterviewDomain): Promise<void>;
-  // abstract delete(id: string): Promise<void>;
 }

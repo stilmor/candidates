@@ -132,9 +132,11 @@ docker compose exec server npx prisma migrate deploy
 •	Swagger (API Docs): http://localhost:3000/api/docs
 
 ### 4. Parar los servicios
+docker compose down
 
 # Recomendacion usar Docker Desktop
 https://www.docker.com/products/docker-desktop/
+
 
 Licencia
 Este proyecto se distribuye bajo la licencia MIT.

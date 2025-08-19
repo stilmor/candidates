@@ -14,5 +14,5 @@ export class CreateInterviewDto {
     description: 'ISO date-time for when the interview is scheduled',
   })
   @IsISO8601()
-  scheduledAt: string; // ISO string; convert to Date in the use case
+  scheduledAt: string;
 }

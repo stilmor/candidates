@@ -1,6 +1,5 @@
 import { Candidate, CandidateStatus } from '@prisma/client';
 
-// Útil para tests e2e: objeto completo como quedaría en DB
 export function makeCandidate(overrides: Partial<Candidate> = {}): Candidate {
   return {
     id: overrides.id ?? 'test-id',
@@ -13,7 +12,6 @@ export function makeCandidate(overrides: Partial<Candidate> = {}): Candidate {
   };
 }
 
-// Útil para POST /candidates (payload de creación, sin id)
 export type CreateCandidatePayload = Omit<Candidate, 'id'>;
 
 export function makeCreateCandidatePayload(

@@ -21,11 +21,9 @@ const candidates = useCandidatesStore()
 const items = computed<Crumb[]>(() => {
   const list: Crumb[] = [{ title: 'Inicio', href: '/' }]
 
-  // /candidates
   if (route.path.startsWith('/candidates')) {
     list.push({ title: 'Candidatos', href: '/candidates' })
 
-    // /candidates/:id
     const id = route.params.id as string | undefined
     if (id) {
       const found = candidates.list.find(c => c.id === id)
@@ -33,7 +31,6 @@ const items = computed<Crumb[]>(() => {
         found ? `${found.firstName} ${found.lastName}` : 'Detalle'
       list.push({ title: label, disabled: true })
     } else {
-      // estás en el listado
       list[list.length - 1].disabled = true
     }
   }

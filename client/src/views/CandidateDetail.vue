@@ -11,7 +11,6 @@ const router = useRouter()
 const candidates = useCandidatesStore()
 const interviews = useInterviewsStore()
 
-// --- Tabla de entrevistas (headers + items) ---
 const interviewHeaders = [
   { title: 'Fecha y hora', key: 'when' },
   { title: 'Posición', key: 'position' },
@@ -27,7 +26,6 @@ const interviewItems = computed(() => {
   }))
 })
 
-// --- Edición y validación ---
 const editMode = ref(false)
 const formRef = ref<any>(null)
 const savedOk = ref(false)
@@ -84,7 +82,6 @@ async function save() {
   if (!candidates.current) return
   savedOk.value = false
 
-  // valida el formulario con Vuetify
   const validation = await formRef.value?.validate?.()
   if (validation && validation.valid === false) return
 
@@ -110,7 +107,6 @@ async function doDelete() {
   deleting.value = true
   try {
     await candidates.delete(candidates.current.id)
-    // Redirigir a la lista de candidatos
     router.push({ name: 'candidates' })
   } finally {
     deleting.value = false
@@ -253,7 +249,6 @@ async function doDelete() {
 .contained { max-width: 1920px; margin: 0 auto; }
 .centered-block { max-width: 1920px; margin: 0 auto; }
 
-/* Alinear headers y celdas a la izquierda en la tabla de entrevistas */
 .table-left :deep(th),
 .table-left :deep(td) {
   text-align: left;

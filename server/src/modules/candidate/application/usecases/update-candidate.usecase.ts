@@ -1,4 +1,3 @@
-// server/src/modules/candidate/application/usecases/update-candidate.usecase.ts
 import { Injectable } from '@nestjs/common';
 import {
   CandidateRepository,
@@ -21,7 +20,6 @@ export class UpdateCandidateUseCase {
 
   private toUpdateData(dto: UpdateCandidateDto): UpdateCandidateData {
     const { firstName, lastName, email, phone, observations, status } = dto;
-    // quita claves con undefined para no sobreescribir con null/undefined en DB
     const entries = Object.entries({
       firstName,
       lastName,

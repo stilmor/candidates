@@ -1,4 +1,3 @@
-//src/strores/interviews.ts
 import { defineStore } from 'pinia'
 import type { InterviewDTO } from '@/api/interviews'
 import { getInterviewsByCandidate, createInterview as apiCreateInterview } from '@/api/interviews'

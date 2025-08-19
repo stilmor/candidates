@@ -8,7 +8,7 @@ export class HealthController {
   constructor(private readonly health: HealthCheckService) {}
 
   @Get()
-  @HealthCheck() // marks this route as a health check endpoint
+  @HealthCheck()
   @ApiOperation({ summary: 'Simple health check' })
   @ApiOkResponse({ description: 'OK – Service is healthy' })
   check() {

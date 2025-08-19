@@ -33,12 +33,10 @@ export const useCandidatesStore = defineStore('candidates', {
       try {
         const updated = await updateCandidate(id, data)
         this.lastUpdated = updated
-        // sincroniza `current` si coincide
         if (this.current && this.current.id === id) {
           this.current = { ...this.current, ...updated }
         }
-        // actualiza la lista si el candidato está cargado
-        const idx = this.list.findIndex(c => c.id === id)
+        const idx = this.list.findIndex(candidate => candidate.id === id)
         if (idx !== -1) {
           this.list.splice(idx, 1, { ...this.list[idx], ...updated })
         }
@@ -55,12 +53,10 @@ export const useCandidatesStore = defineStore('candidates', {
       this.loading = true; this.error = null
       try {
         await deleteCandidate(id)
-        // Elimina de la lista si está
-        const idx = this.list.findIndex(c => c.id === id)
+        const idx = this.list.findIndex(candidate => candidate.id === id)
         if (idx !== -1) {
           this.list.splice(idx, 1)
         }
-        // Si se elimina el actual, limpia
         if (this.current && this.current.id === id) {
           this.current = null
         }

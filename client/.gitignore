@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Ignore Vue TypeScript declaration files
+*.vue.d.ts
+
+# Ignore generated Vue declaration files, but not vite-env.d.ts
+src/**/*.vue.d.ts

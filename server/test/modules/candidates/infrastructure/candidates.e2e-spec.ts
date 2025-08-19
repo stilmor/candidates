@@ -46,7 +46,6 @@ describe('POST /candidates (e2e)', () => {
   });
 
   afterAll(async () => {
-    // Limpieza si existe DELETE /candidates/:id (ignora error si no existe)
     if (createdId) {
       try {
         await request(server).delete(`/candidates/${createdId}`);

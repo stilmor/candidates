@@ -7,14 +7,13 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Validación global de DTOs
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // elimina props no declaradas en el DTO
-      forbidNonWhitelisted: true, // si llegan props extra -> 400
-      transform: true, // convierte tipos (strings a numbers, dates, etc.)
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
       transformOptions: { enableImplicitConversion: true },
-      stopAtFirstError: true, // primer error y corta
+      stopAtFirstError: true,
       validationError: { target: false, value: true },
     }),
   );

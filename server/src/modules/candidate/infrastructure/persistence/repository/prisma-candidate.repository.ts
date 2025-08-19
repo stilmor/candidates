@@ -8,7 +8,6 @@ import { PrismaService } from 'src/prisma.service';
 import { toPrisma, prismaCandidateToDomain } from '../mappers/candidate.mapper';
 import { Prisma } from '@prisma/client';
 
-// small helpers to keep update() tidy
 const omitUndefined = <T extends Record<string, unknown>>(obj: T) =>
   Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 
@@ -33,10 +32,8 @@ export class PrismaCandidateRepository implements CandidateRepository {
   ): Promise<CandidateDomain | null> {
     const { status, ...rest } = data;
 
-    // build base object without undefined fields
     const base = omitUndefined(rest) as Prisma.CandidateUpdateInput;
 
-    // add status if present, mapping from domain -> prisma enum
     const updateData: Prisma.CandidateUpdateInput = {
       ...base,
       ...(status !== undefined ? { status: toPrisma(status) } : {}),

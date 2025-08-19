@@ -25,7 +25,6 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: development
-      # IMPORTANTE: si el server corre dentro del contenedor, usa "db" como host
       DATABASE_URL: postgresql://postgres:postgres@db:5432/candidates?schema=public
     depends_on:
       db:

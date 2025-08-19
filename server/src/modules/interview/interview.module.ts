@@ -14,8 +14,6 @@ import { GetInterviewUseCase } from './application/usecases/get-interview.usecas
     PrismaService,
     CreateInterviewUseCase,
     GetInterviewUseCase,
-    // UpdateInterviewUseCase,
-    // DeleteInterviewUseCase,
     PrismaInterviewRepository,
     {
       provide: InterviewRepository,

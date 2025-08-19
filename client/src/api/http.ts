@@ -1,4 +1,3 @@
-// client/src/api/http.ts
 import axios from "axios";
 
 const raw = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() ?? "";

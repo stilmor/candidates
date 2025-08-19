@@ -41,8 +41,8 @@ Una instancia de PostgreSQL en ejecución
 
 
 Clonar el repositorio
-git clone <URL_DEL_REPOSITORIO>
-cd <directorio_del_proyecto>
+git clone https://github.com/stilmor/candidates.git
+cd candidates
 
 Variables de entorno
 Crea un archivo .env en la raíz del proyecto con al menos la siguiente variable:
@@ -58,10 +58,9 @@ Generar cliente Prisma y migraciones
 npx prisma migrate dev --name init
 npx prisma generate
 
-Levantar la aplicación
-npm run start:dev
-# o
-# yarn start:dev
+Levantar la aplicación desde la carpeta raiz del proyecto
+npm run dev -w client
+npm run dev -w server
 
 La aplicación quedará disponible en http://localhost:3000.
 
@@ -90,15 +89,52 @@ src/modules/candidate/entities: Entidades de dominio (si aplica).
 Despliegue en Render
 El despliegue en Render está configurado con:
 
+Servicio:
 
-Comando de build: npm run build
+    Con autoDeploy OnCommit en branch main
+
+    Comando de build: npm ci && npm run build
 
 
-Start: npm run start:prod
+    Start: npm run start:prod
+
+Cliente:
+
+    Comando de build: npm ci --include=optional \   && npm i -D @rollup/rollup-linux-x64-gnu@^4 --no-save \   && npm run build
+
+    Con autoDeploy OnCommit en branch main
+
+    Publish Directory: dist
 
 
 Variables de entorno configuradas en el dashboard de Render.
 
+## Ejecución con Docker
+
+El proyecto incluye un `docker-compose.yml` en la raíz que levanta:
+
+- **PostgreSQL** (`candidates_db`)
+- **API NestJS** (`candidates_server`)
+- **Frontend Vue** (`candidates_client`)
+
+### 1. Levantar contenedores
+
+docker compose up -d --build
+
+### 2. aplicar las migraciones a la base de datos
+
+docker compose exec server npx prisma migrate deploy
+
+### 3. aplicar las migraciones a la base de datos
+
+•	Frontend: http://localhost:5173
+•	Backend NestJS: http://localhost:3000
+•	Swagger (API Docs): http://localhost:3000/api/docs
+
+### 4. Parar los servicios
+
+# Recomendacion usar Docker Desktop
+https://www.docker.com/products/docker-desktop/
 
 Licencia
 Este proyecto se distribuye bajo la licencia MIT.

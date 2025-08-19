@@ -17,7 +17,7 @@ interface TestCandidateDTO {
 }
 
 /**
- * E2E: POST /candidates (creación)
+ * E2E: POST /candidates
  */
 
 describe('POST /candidates (e2e)', () => {
